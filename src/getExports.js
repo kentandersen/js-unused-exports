@@ -11,6 +11,9 @@ import {
   isTypeAlias,
   isOpaqueType,
   isInterfaceDeclaration,
+  isTSTypeAliasDeclaration,
+  isTSInterfaceDeclaration,
+  isTSEnumDeclaration,
 } from '@babel/types';
 
 function createIsNotIgnoredFile(ignoreExportPatterns = []) {
@@ -111,7 +114,10 @@ export function getExportName(node, sourcePath, ctx) {
     isClassDeclaration(declaration) ||
     isTypeAlias(declaration) ||
     isOpaqueType(declaration) ||
-    isInterfaceDeclaration(declaration)
+    isInterfaceDeclaration(declaration) ||
+    isTSTypeAliasDeclaration(declaration) ||
+    isTSEnumDeclaration(declaration) ||
+    isTSInterfaceDeclaration(declaration)
   ) {
     return {
       name: declaration.id.name,

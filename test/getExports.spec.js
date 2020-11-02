@@ -233,4 +233,33 @@ export const C = 789;`,
       expect(() => getExportName(node)).toThrow();
     });
   });
+
+  describe('getExportName() typescript', () => {
+    const testGetExportName = (source, expectedName) => {
+      const ast = parse(source, {
+        ...defaultParserOptions,
+        plugins: ['typescript'],
+      });
+      const node = ast.program.body[0];
+      const exportName = getExportName(node);
+
+      expect(expectedName).toContain(exportName.name);
+    };
+
+    it('TSTypeAliasDeclaration', () => {
+      testGetExportName('export type A = number', 'A');
+    });
+
+    it('TSTypeAliasDeclaration', () => {
+      testGetExportName('export type A = { one: number }', 'A');
+    });
+
+    it('TSInterfaceDeclaration', () => {
+      testGetExportName('export interface A { one: number }', 'A');
+    });
+
+    it('TSEnumDeclaration', () => {
+      testGetExportName('export enum A { one }', 'A');
+    });
+  });
 });
