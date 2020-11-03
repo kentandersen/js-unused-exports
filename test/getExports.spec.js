@@ -261,5 +261,9 @@ export const C = 789;`,
     it('TSEnumDeclaration', () => {
       testGetExportName('export enum A { one }', 'A');
     });
+
+    it('TSDeclareFunction', () => {
+      testGetExportName('export function A(): number', 'A');
+    });
   });
 });

@@ -14,6 +14,7 @@ import {
   isTSTypeAliasDeclaration,
   isTSInterfaceDeclaration,
   isTSEnumDeclaration,
+  isTSDeclareFunction,
 } from '@babel/types';
 
 function createIsNotIgnoredFile(ignoreExportPatterns = []) {
@@ -126,7 +127,8 @@ export function getExportName(node, sourcePath, ctx) {
     isInterfaceDeclaration(declaration) ||
     isTSTypeAliasDeclaration(declaration) ||
     isTSEnumDeclaration(declaration) ||
-    isTSInterfaceDeclaration(declaration)
+    isTSInterfaceDeclaration(declaration) ||
+    isTSDeclareFunction(declaration)
   ) {
     return {
       name: declaration.id.name,
