@@ -45,13 +45,23 @@ function groupImports(importData) {
   }, {});
 }
 
-function getImportData(source, srcPath, ctx) {
-  const { config } = ctx;
-  const ast = parse(source, config.parserOptions);
+function getImportData(source, sourcePath, ctx) {
+  const { projectRoot, parserOptions } = ctx.config;
+
+  let ast;
+  try {
+    ast = parse(source, parserOptions);
+  } catch (error) {
+    const relativePath = path.relative(projectRoot, sourcePath);
+    console.log(`Unable to parse ${relativePath}\n${error.message}\n`);
+
+    return [];
+  }
+
   const nodes = ast.program.body.filter(isImport);
 
   return nodes
-    .flatMap((node) => getImportDetails(node, srcPath, ast, ctx))
+    .flatMap((node) => getImportDetails(node, sourcePath, ast, ctx))
     .filter(
       ({ specifiers, from }) => specifiers.length && !isIgnoredImport(from, ctx)
     );

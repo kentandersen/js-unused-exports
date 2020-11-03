@@ -61,9 +61,18 @@ function isExportDeclaration(node) {
  * @param {Object} parserOptions Parser options
  */
 export function getExportedIdentifiers(source, sourcePath, ctx) {
-  const { parserOptions } = ctx.config;
+  const { projectRoot, parserOptions } = ctx.config;
 
-  const ast = parse(source, parserOptions);
+  let ast;
+  try {
+    ast = parse(source, parserOptions);
+  } catch (error) {
+    const relativePath = path.relative(projectRoot, sourcePath);
+    console.log(`Unable to parse ${relativePath}\n${error.message}\n`);
+
+    return [];
+  }
+
   return ast.program.body
     .filter(isExportDeclaration)
     .flatMap((node) => getExportName(node, sourcePath, ctx));
